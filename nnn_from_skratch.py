@@ -1,8 +1,10 @@
 import sys
+import random
 import math
 import numpy as np
 import matplotlib
 
+TOLERANCE = 0.01
 
 def spiral_data(points, classes):
     X = np.zeros((points*classes, 2))
@@ -51,21 +53,64 @@ class Loss_CategoricalCrossentropy(Loss):
 		return negative_log_likelihoods
 
 
-X, y = spiral_data(100, 3)
+def train(epochs):
+	X, y = spiral_data(100, 3)
 
-dense1 =Layer_Dense(2, 3)
-activation1 = Activation_ReLU()
+	dense1 = Layer_Dense(3, 10)
+	activation1 = Activation_ReLU()
 
-dense2 = Layer_Dense(3, 3)
-activation2 = Activation_Softmax()
+	dense2 = Layer_Dense(10, 3)
+	activation2 = Activation_Softmax()
 
-dense1.forward(X)
-activation1.forward(dense1.output)
+	loss_function = Loss_CategoricalCrossentropy()
 
-dense2.forward(activation1.output)
-activation2.forward(dense2.output)
-print(activation2.output)
+	best_loss = 10
+	best_weights_l1 = 0.1 * np.random.randn(2, 3)
+	best_biases_l1 = 0.1 * np.random.randn(1, 3)
+	best_weights_l2 = 0.1 * np.random.randn(3, 3)
+	best_biases_l2 = 0.1 * np.random.randn(1, 3)
 
-loss_function = Loss_CategoricalCrossentropy()
-loss = loss_function.calculate(activation2.output, y)
-print("loss: ", loss)
+	episode_weights_l1 = 0.1 * np.random.randn(2, 3)
+	episode_biases_l1 = 0.1 * np.random.randn(1, 3)
+	episode_weights_l2 = 0.1 * np.random.randn(3, 3)
+	episode_biases_l2 = 0.1 * np.random.randn(1, 3)
+	for i in range(epochs):
+		
+		for i in range(best_weights_l1.shape[0]):
+			for ii in range(best_weights_l1.shape[1]):
+				episode_weights_l1[i][ii] = best_weights_l1[i][ii] + random.uniform(-TOLERANCE, TOLERANCE)
+		for i in range(best_biases_l1.shape[0]):
+			for ii in range(best_biases_l1.shape[1]):
+				episode_biases_l1[i][ii] = best_biases_l1[i][ii] + random.uniform(-TOLERANCE, TOLERANCE)
+		for i in range(best_weights_l2.shape[0]):
+			for ii in range(best_weights_l2.shape[1]):
+				episode_weights_l2[i][ii] = best_weights_l2[i][ii] + random.uniform(-TOLERANCE, TOLERANCE)
+		for i in range(dense2.biases.shape[0]):
+			for ii in range(best_biases_l2.shape[1]):
+				episode_biases_l2[i][ii] = dense2.biases[i][ii] + random.uniform(-TOLERANCE, TOLERANCE)
+
+		dense1.weights = episode_weights_l1
+		dense1.biases = episode_biases_l1
+
+		activation1 = Activation_ReLU()
+
+		activation2 = Activation_Softmax()
+
+		dense2.weights = episode_weights_l2
+		dense2.biases = episode_biases_l2
+
+		dense1.forward(X)
+		activation1.forward(dense1.output)
+
+		dense2.forward(activation1.output)
+		activation2.forward(dense2.output)
+
+		loss = loss_function.calculate(activation2.output, y)
+		if loss < best_loss:
+			best_loss = loss
+			print("loss: ", loss)
+			best_weights_l1 = episode_weights_l1
+			best_biases_l1 = episode_biases_l1
+			best_weights_l2 = episode_weights_l2
+			best_biases_l2 = episode_biases_l2
+train(epochs=10000)
