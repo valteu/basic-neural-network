@@ -4,7 +4,7 @@ import math
 import numpy as np
 import matplotlib
 
-TOLERANCE = 0.01
+TOLERANCE = 0.001
 
 def spiral_data(points, classes):
     X = np.zeros((points*classes, 2))
@@ -44,7 +44,6 @@ class Loss_CategoricalCrossentropy(Loss):
 	def forward(self, y_pred, y_true):
 		samples = len(y_pred)
 		y_pred_clipped = np.clip(y_pred, 1e-7, 1-1e-7)
-
 		if len(y_true.shape) == 1:
 			correct_confidences = y_pred_clipped[range(samples), y_true]
 		elif len(y_true.shape) == 2:
@@ -55,6 +54,22 @@ class Loss_CategoricalCrossentropy(Loss):
 
 def train(epochs):
 	X, y = spiral_data(100, 3)
+	X_sampled = []
+	list_ = []
+	for i in range(int(X.size/2)):
+		list_.append(X[i])
+		if i%10 == 0 and i != 0:
+			X_sampled.append(list_)
+			list_ = []
+	y_sampled = []	
+	list_ = []
+	for i in range(int(y.size)):
+		list_.append(y[i])
+		if i%10 == 0 and i != 0:
+			list_array = np.array(list_)
+			y_sampled.append(list_array)
+			list_ = []
+	y_sampled_array = np.array(y_sampled)
 
 	dense1 = Layer_Dense(3, 10)
 	activation1 = Activation_ReLU()
@@ -74,43 +89,44 @@ def train(epochs):
 	episode_biases_l1 = 0.1 * np.random.randn(1, 3)
 	episode_weights_l2 = 0.1 * np.random.randn(3, 3)
 	episode_biases_l2 = 0.1 * np.random.randn(1, 3)
-	for i in range(epochs):
-		
-		for i in range(best_weights_l1.shape[0]):
-			for ii in range(best_weights_l1.shape[1]):
-				episode_weights_l1[i][ii] = best_weights_l1[i][ii] + random.uniform(-TOLERANCE, TOLERANCE)
-		for i in range(best_biases_l1.shape[0]):
-			for ii in range(best_biases_l1.shape[1]):
-				episode_biases_l1[i][ii] = best_biases_l1[i][ii] + random.uniform(-TOLERANCE, TOLERANCE)
-		for i in range(best_weights_l2.shape[0]):
-			for ii in range(best_weights_l2.shape[1]):
-				episode_weights_l2[i][ii] = best_weights_l2[i][ii] + random.uniform(-TOLERANCE, TOLERANCE)
-		for i in range(dense2.biases.shape[0]):
-			for ii in range(best_biases_l2.shape[1]):
-				episode_biases_l2[i][ii] = dense2.biases[i][ii] + random.uniform(-TOLERANCE, TOLERANCE)
+	for samples in range(len(y_sampled)):
+		for ii in range(epochs):
 
-		dense1.weights = episode_weights_l1
-		dense1.biases = episode_biases_l1
+			for i in range(best_weights_l1.shape[0]):
+				for ii in range(best_weights_l1.shape[1]):
+					episode_weights_l1[i][ii] = best_weights_l1[i][ii] + random.uniform(-TOLERANCE, TOLERANCE)
+			for i in range(best_biases_l1.shape[0]):
+				for ii in range(best_biases_l1.shape[1]):
+					episode_biases_l1[i][ii] = best_biases_l1[i][ii] + random.uniform(-TOLERANCE, TOLERANCE)
+			for i in range(best_weights_l2.shape[0]):
+				for ii in range(best_weights_l2.shape[1]):
+					episode_weights_l2[i][ii] = best_weights_l2[i][ii] + random.uniform(-TOLERANCE, TOLERANCE)
+			for i in range(dense2.biases.shape[0]):
+				for ii in range(best_biases_l2.shape[1]):
+					episode_biases_l2[i][ii] = dense2.biases[i][ii] + random.uniform(-TOLERANCE, TOLERANCE)
 
-		activation1 = Activation_ReLU()
+			dense1.weights = episode_weights_l1
+			dense1.biases = episode_biases_l1
 
-		activation2 = Activation_Softmax()
+			activation1 = Activation_ReLU()
 
-		dense2.weights = episode_weights_l2
-		dense2.biases = episode_biases_l2
+			activation2 = Activation_Softmax()
 
-		dense1.forward(X)
-		activation1.forward(dense1.output)
+			dense2.weights = episode_weights_l2
+			dense2.biases = episode_biases_l2
 
-		dense2.forward(activation1.output)
-		activation2.forward(dense2.output)
+			dense1.forward(X_sampled[samples])
+			activation1.forward(dense1.output)
 
-		loss = loss_function.calculate(activation2.output, y)
-		if loss < best_loss:
-			best_loss = loss
-			print("loss: ", loss)
-			best_weights_l1 = episode_weights_l1
-			best_biases_l1 = episode_biases_l1
-			best_weights_l2 = episode_weights_l2
-			best_biases_l2 = episode_biases_l2
+			dense2.forward(activation1.output)
+			activation2.forward(dense2.output)
+			loss = loss_function.calculate(activation2.output, y_sampled_array[samples])
+			if loss < best_loss:
+				best_loss = loss
+				print("loss: ", loss)
+				best_weights_l1 = episode_weights_l1
+				best_biases_l1 = episode_biases_l1
+				best_weights_l2 = episode_weights_l2
+				best_biases_l2 = episode_biases_l2
+
 train(epochs=10000)
