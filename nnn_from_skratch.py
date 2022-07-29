@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib
 
 TOLERANCE = 0.001
+SAMPLESIZE = 20
 
 def spiral_data(points, classes):
     X = np.zeros((points*classes, 2))
@@ -58,14 +59,14 @@ def train(epochs):
 	list_ = []
 	for i in range(int(X.size/2)):
 		list_.append(X[i])
-		if i%10 == 0 and i != 0:
+		if i%SAMPLESIZE == 0 and i != 0:
 			X_sampled.append(list_)
 			list_ = []
 	y_sampled = []	
 	list_ = []
 	for i in range(int(y.size)):
 		list_.append(y[i])
-		if i%10 == 0 and i != 0:
+		if i%SAMPLESIZE == 0 and i != 0:
 			list_array = np.array(list_)
 			y_sampled.append(list_array)
 			list_ = []
@@ -90,6 +91,7 @@ def train(epochs):
 	episode_weights_l2 = 0.1 * np.random.randn(3, 3)
 	episode_biases_l2 = 0.1 * np.random.randn(1, 3)
 	for samples in range(len(y_sampled)):
+		print(samples)
 		for ii in range(epochs):
 
 			for i in range(best_weights_l1.shape[0]):
@@ -129,4 +131,4 @@ def train(epochs):
 				best_weights_l2 = episode_weights_l2
 				best_biases_l2 = episode_biases_l2
 
-train(epochs=10000)
+train(epochs=100000)
