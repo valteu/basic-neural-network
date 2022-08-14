@@ -91,8 +91,11 @@ def train(epochs):
 			y_sampled.append(list_array)
 			list_ = []
 	y_sampled_array = np.array(y_sampled)
-
-	dense1 = Layer_Dense(3, 20)
+	#
+	y_sampled_array = y
+	X_sampled = X
+	#
+	dense1 = Layer_Dense(2, 20)
 	activation1 = Activation_ReLU()
 
 	dense2 = Layer_Dense(20, 20)
@@ -120,56 +123,56 @@ def train(epochs):
 	activation1 = Activation_ReLU()
 	activation2 = Activation_ReLU()
 	activation3 = Activation_Softmax()
-	for samples in range(len(y_sampled)):
-		print(samples)
-		for ii in range(epochs):
+	# for samples in range(len(y_sampled)):
+	# 	print(samples)
+	for ii in range(epochs):
 
-			for i in range(best_weights_l1.shape[0]):
-				for ii in range(best_weights_l1.shape[1]):
-					episode_weights_l1[i][ii] = best_weights_l1[i][ii] + random.uniform(-TOLERANCE, TOLERANCE)
-			for i in range(best_biases_l1.shape[0]):
-				for ii in range(best_biases_l1.shape[1]):
-					episode_biases_l1[i][ii] = best_biases_l1[i][ii] + random.uniform(-TOLERANCE, TOLERANCE)
-			for i in range(best_weights_l2.shape[0]):
-				for ii in range(best_weights_l2.shape[1]):
-					episode_weights_l2[i][ii] = best_weights_l2[i][ii] + random.uniform(-TOLERANCE, TOLERANCE)
-			for i in range(dense2.biases.shape[0]):
-				for ii in range(best_biases_l2.shape[1]):
-					episode_biases_l2[i][ii] = dense2.biases[i][ii] + random.uniform(-TOLERANCE, TOLERANCE)
-			for i in range(best_weights_l3.shape[0]):
-				for ii in range(best_weights_l3.shape[1]):
-					episode_weights_l3[i][ii] = best_weights_l3[i][ii] + random.uniform(-TOLERANCE, TOLERANCE)
-			for i in range(dense3.biases.shape[0]):
-				for ii in range(best_biases_l3.shape[1]):
-					episode_biases_l3[i][ii] = dense3.biases[i][ii] + random.uniform(-TOLERANCE, TOLERANCE)
+		for i in range(best_weights_l1.shape[0]):
+			for ii in range(best_weights_l1.shape[1]):
+				episode_weights_l1[i][ii] = best_weights_l1[i][ii] + random.uniform(-TOLERANCE, TOLERANCE)
+		for i in range(best_biases_l1.shape[0]):
+			for ii in range(best_biases_l1.shape[1]):
+				episode_biases_l1[i][ii] = best_biases_l1[i][ii] + random.uniform(-TOLERANCE, TOLERANCE)
+		for i in range(best_weights_l2.shape[0]):
+			for ii in range(best_weights_l2.shape[1]):
+				episode_weights_l2[i][ii] = best_weights_l2[i][ii] + random.uniform(-TOLERANCE, TOLERANCE)
+		for i in range(dense2.biases.shape[0]):
+			for ii in range(best_biases_l2.shape[1]):
+				episode_biases_l2[i][ii] = dense2.biases[i][ii] + random.uniform(-TOLERANCE, TOLERANCE)
+		for i in range(best_weights_l3.shape[0]):
+			for ii in range(best_weights_l3.shape[1]):
+				episode_weights_l3[i][ii] = best_weights_l3[i][ii] + random.uniform(-TOLERANCE, TOLERANCE)
+		for i in range(dense3.biases.shape[0]):
+			for ii in range(best_biases_l3.shape[1]):
+				episode_biases_l3[i][ii] = dense3.biases[i][ii] + random.uniform(-TOLERANCE, TOLERANCE)
 
-			dense1.weights = episode_weights_l1
-			dense1.biases = episode_biases_l1
+		dense1.weights = episode_weights_l1
+		dense1.biases = episode_biases_l1
 
-			dense2.weights = episode_weights_l2
-			dense2.biases = episode_biases_l2
+		dense2.weights = episode_weights_l2
+		dense2.biases = episode_biases_l2
 
-			dense3.weights = episode_weights_l3
-			dense3.biases = episode_biases_l3
+		dense3.weights = episode_weights_l3
+		dense3.biases = episode_biases_l3
 
-			dense1.forward(X_sampled[samples])
-			activation1.forward(dense1.output)
+		dense1.forward(X_sampled)
+		activation1.forward(dense1.output)
 
-			dense2.forward(activation1.output)
-			activation2.forward(dense2.output)
+		dense2.forward(activation1.output)
+		activation2.forward(dense2.output)
 
-			dense3.forward(activation2.output)
-			activation3.forward(dense3.output)
-			loss = loss_function.calculate(activation2.output, y_sampled_array[samples])
-			if loss < best_loss:
-				best_loss = loss
-				print("loss: ", loss)
-				best_weights_l1 = episode_weights_l1
-				best_biases_l1 = episode_biases_l1
-				best_weights_l2 = episode_weights_l2
-				best_biases_l2 = episode_biases_l2
+		dense3.forward(activation2.output)
+		activation3.forward(dense3.output)
+		loss = loss_function.calculate(activation2.output, y_sampled_array)
+		if loss < best_loss:
+			best_loss = loss
+			print("loss: ", loss)
+			best_weights_l1 = episode_weights_l1
+			best_biases_l1 = episode_biases_l1
+			best_weights_l2 = episode_weights_l2
+			best_biases_l2 = episode_biases_l2
 	test = [0.535, 0.825]
-	dense1.forward(X_sampled[samples])
+	dense1.forward(X_sampled)
 	activation1.forward(dense1.output)
 
 	dense2.forward(activation1.output)
@@ -179,4 +182,4 @@ def train(epochs):
 	activation3.forward(dense3.output)
 	print("output: ", activation3.output)
 	visualize_nnn(dense1, X)
-train(epochs=100000)
+train(epochs=1000000)
