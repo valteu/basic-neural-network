@@ -1,7 +1,9 @@
 import numpy as np
+
+import json
 class Layer:
 
-    def __init__(self, inp, out):
+    def __init__(self, inp, out, weights=False, biases=False):
         self.i = inp # input size
         self.o = out # output size
 
@@ -9,8 +11,15 @@ class Layer:
         self.a = np.zeros(self.o) # activations
 
         self.d = np.zeros(self.o) # delta
-        self.w = np.random.rand(self.i, self.o) # weights
-        self.b = np.random.rand(self.o) # biases
+        if weights:
+            self.w = weights
+        else:
+            self.w = np.random.rand(self.i, self.o) # weights
+
+        if biases:
+            self.b = biases
+        else:
+            self.b = np.random.rand(self.o) # biases
 
         self.g_w = np.zeros((self.i, self.o)) # gradient weights
         self.g_b = np.zeros(self.o) # gradient biases
@@ -34,12 +43,22 @@ class Layer:
         gradient_to_pass = np.dot(self.d, self.w.T)
         return gradient_to_pass
 
-
     def activation(self):
         pass
 
     def derivative(self):
         pass
+
+    def write(self, filename):
+        data = []
+        data.append("Weights:")
+        for w in self.w:
+            data.append(w.tolist())
+        data.append("Biases")
+        data.append(self.b.tolist())
+        with open(filename, 'a') as json_file:
+            json.dump(data, json_file)
+            json_file.write('\n')
 
 class Linear(Layer):
     def __init__(self, inp, out):
