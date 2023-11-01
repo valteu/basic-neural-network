@@ -7,8 +7,8 @@ class Layer:
         self.i = inp # input size
         self.o = out # output size
 
-        self.out = np.zeros(self.o) # pre activation output
-        self.a = np.zeros(self.o) # activations
+        self.pre = np.zeros(self.o) # pre activation output
+        self.out = np.zeros(self.o) # activations
 
         self.d = np.zeros(self.o) # delta
         if weights:
@@ -28,9 +28,9 @@ class Layer:
 
     def forward(self, d):
         self.input_data = d
-        self.out = np.dot(d, self.w) + self.b
+        self.pre = np.dot(d, self.w) + self.b
         self.activation()
-        return self.a
+        return self.out
 
     def backward(self, gradient):
         self.d = gradient * self.derivative()
@@ -65,7 +65,7 @@ class Linear(Layer):
         super().__init__(inp, out)
 
     def activation(self):
-        self.a = self.out
+        self.out = self.pre
 
     def derivative(self):
         return np.ones(self.o)
@@ -76,21 +76,21 @@ class ReLu(Layer):
         super().__init__(inp, out)
 
     def activation(self):
-        self.a = np.maximum(self.out, 0)
+        self.out = np.maximum(self.pre, 0)
 
     def derivative(self):
-        return np.where(self.a > 0, 1, 0)
+        return np.where(self.out > 0, 1, 0)
 
 
 class Sigmoid(Layer):
     def __init__(self, inp, out):
         super().__init__(inp, out)
 
-    def sigmoid(self, a):
-        return 1 / (1 + np.exp(-a))
+    def sigmoid(self, d):
+        return 1 / (1 + np.exp(-d))
 
     def activation(self):
-        self.a = self.sigmoid(self.out)
+        self.out = self.sigmoid(self.pre)
 
     def derivative(self):
-        return self.sigmoid(self.a) * (1 - self.sigmoid(self.a))
+        return self.sigmoid(self.out) * (1 - self.sigmoid(self.out))

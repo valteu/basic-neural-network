@@ -40,9 +40,8 @@ class Network:
             total_loss = 0
             for sample in range(len(data)):
                 d_tmp = data[sample].reshape(self.i)
-                t_tmp = targets[sample].reshape(self.o)  # Reshape before shuffling
+                t_tmp = targets[sample].reshape(self.o)
 
-                # Check if the t_tmp array has more than one element before shuffling it.
                 if len(t_tmp) > 1:
                     rand_order = np.random.permutation(self.i)
                     d_tmp = d_tmp[rand_order]
@@ -66,8 +65,8 @@ class Network:
 
         for i in range(len(t)):
             self.forward(t[i])
-            print(f"Tested: {t[i]}, recieved: {self.layers[-1].a}, target: {t_targets[i]}")
-            results.append(self.layers[-1].a)
+            print(f"Tested: {t[i]}, recieved: {self.layers[-1].out}, target: {t_targets[i]}")
+            results.append(self.layers[-1].out)
         return results
 
     def write(self, filename):
