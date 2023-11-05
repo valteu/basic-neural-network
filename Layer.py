@@ -1,6 +1,9 @@
 import numpy as np
+import handout
 
 import json
+
+doc = handout.Handout('./layer_handout')
 class Layer:
 
     def __init__(self, inp, out, weights=False, biases=False):
@@ -26,9 +29,9 @@ class Layer:
 
         self.input_data = None
 
-    def forward(self, d):
-        self.input_data = d
-        self.pre = np.dot(d, self.w) + self.b
+    def forward(self, data):
+        self.input_data = data
+        self.pre = np.dot(data, self.w) + self.b
         self.activation()
         return self.out
 
