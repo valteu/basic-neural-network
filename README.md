@@ -70,4 +70,4 @@ python main.py
 This script can be easily adapted for your specific use cases and data.
 
 ## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the [MIT License](LICENSE).
