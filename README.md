@@ -30,7 +30,6 @@ You are now ready to use the Basic Neural Network.
 You can use this basic neural network implementation in your Python projects by following these steps:
 1. Import the necessary modules:
 ```python
-Copy code
 import numpy as np
 import handout
 import json
