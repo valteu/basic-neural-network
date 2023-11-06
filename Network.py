@@ -1,7 +1,8 @@
 import numpy as np
+import json
 
 class Network:
-    def __init__(self, layout, weights = False, biases=False):
+    def __init__(self, layout, weights=None, biases=None):
         self.n = len(layout)
         self.layers = layout
         self.i = self.layers[0].i
@@ -9,6 +10,13 @@ class Network:
 
         self.out = np.zeros(self.o)
         self.loss = []
+
+        if weights is not None:
+            for c, w in enumerate(weights):
+                self.layers[c].w = w
+        if biases is not None:
+            for c, b in enumerate(biases):
+                self.layers[c].b = b
 
     def forward(self, d):
         out = d
@@ -70,8 +78,21 @@ class Network:
         return results
 
     def write(self, filename):
+        data = [{
+                    "type": "w",
+                    "data": []
+                },
+                {
+                    "type": "b",
+                    "data": []
+                }]
         for layer in self.layers:
-            layer.write(filename)
+            data[0]["data"].append(layer.w.tolist())
+            data[1]["data"].append(layer.b.tolist())
+        with open(filename, 'a') as file:
+            json.dump(data, file)
+            file.write('\n')
+
 
     def get_loss(self):
         return self.loss
