@@ -65,15 +65,48 @@ class Network:
             print(f"Loss: {total_loss / len(data)}")
             self.loss.append(total_loss / len(data))
 
+    def train_random(self, epochs, data, targets, lr):
+        for _ in range(epochs):
+            total_loss = 0
+            best_loss = np.inf
+            for sample in range(len(data)):
+                ws = []
+                bs = []
+                d_tmp = data[sample].reshape(self.i)
+                t_tmp = targets[sample].reshape(self.o)
 
-    def test(self, tests, targets):
+                if len(t_tmp) > 1:
+                    rand_order = np.random.permutation(self.i)
+                    d_tmp = d_tmp[rand_order]
+                    t_tmp = t_tmp[rand_order]
+
+                for l in self.layers:
+                    ws.append(l.w)
+                    random_numbers = np.random.uniform(-0.1, 0.1, size=l.w.shape)
+                    l.w = l.w + random_numbers
+                    bs.append(l.b)
+                    random_numbers = np.random.uniform(-0.1, 0.1, size=l.b.shape)
+                    l.b = l.b + random_numbers
+                pred_out = self.forward(d_tmp)
+                loss = self.squared_loss(pred_out, t_tmp)
+                if loss > best_loss:
+                    for c, l in enumerate(self.layers):
+                        l.w = ws[c]
+                        l.b = bs[c]
+                else:
+                    best_loss = loss
+                total_loss += loss
+
+            print(f"Loss: {total_loss / len(data)}")
+            self.loss.append(total_loss / len(data))
+
+
+    def test(self, tests):
         results = []
         t = tests.reshape(-1, self.i)
-        t_targets = targets.reshape(-1, self.o)
 
-        for i in range(len(t)):
-            self.forward(t[i])
-            print(f"Tested: {t[i]}, recieved: {self.layers[-1].out}, target: {t_targets[i]}")
+        for i in t:
+            self.forward(i)
             results.append(self.layers[-1].out)
         return results
 
