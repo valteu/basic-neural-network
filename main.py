@@ -27,8 +27,8 @@ def main():
     ]
 
     n = Network(layers)
-    # n.train(EPOCHS, data, targets, LR)
-    n.train_random(EPOCHS, data, targets, LR)
+    n.train(EPOCHS, data, targets, LR)
+    # n.train_random(EPOCHS, data, targets, LR)
     loss = n.get_loss()
     loss = np.array(loss)
     epochs = np.arange(len(loss))

@@ -69,9 +69,17 @@ class Network:
         for _ in range(epochs):
             total_loss = 0
             best_loss = np.inf
+            ws = []
+            bs = []
+            for l in self.layers:
+                ws.append(l.w)
+                random_numbers = np.random.uniform(-0.1, 0.1, size=l.w.shape)
+                l.w = l.w + random_numbers
+                bs.append(l.b)
+                random_numbers = np.random.uniform(-0.1, 0.1, size=l.b.shape)
+                l.b = l.b + random_numbers
+
             for sample in range(len(data)):
-                ws = []
-                bs = []
                 d_tmp = data[sample].reshape(self.i)
                 t_tmp = targets[sample].reshape(self.o)
 
@@ -80,22 +88,15 @@ class Network:
                     d_tmp = d_tmp[rand_order]
                     t_tmp = t_tmp[rand_order]
 
-                for l in self.layers:
-                    ws.append(l.w)
-                    random_numbers = np.random.uniform(-0.1, 0.1, size=l.w.shape)
-                    l.w = l.w + random_numbers
-                    bs.append(l.b)
-                    random_numbers = np.random.uniform(-0.1, 0.1, size=l.b.shape)
-                    l.b = l.b + random_numbers
                 pred_out = self.forward(d_tmp)
                 loss = self.squared_loss(pred_out, t_tmp)
-                if loss > best_loss:
-                    for c, l in enumerate(self.layers):
-                        l.w = ws[c]
-                        l.b = bs[c]
-                else:
-                    best_loss = loss
                 total_loss += loss
+            if total_loss > best_loss:
+                for c, l in enumerate(self.layers):
+                    l.w = ws[c]
+                    l.b = bs[c]
+            else:
+                best_loss = total_loss
 
             print(f"Loss: {total_loss / len(data)}")
             self.loss.append(total_loss / len(data))
@@ -129,4 +130,3 @@ class Network:
 
     def get_loss(self):
         return self.loss
-
