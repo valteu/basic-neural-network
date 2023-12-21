@@ -66,9 +66,9 @@ class Network:
             self.loss.append(total_loss / len(data))
 
     def train_random(self, epochs, data, targets, lr):
+        best_loss = np.inf
         for _ in range(epochs):
             total_loss = 0
-            best_loss = np.inf
             ws = []
             bs = []
             for l in self.layers:

@@ -1,9 +1,7 @@
 import numpy as np
-import handout
 
 import json
 
-doc = handout.Handout('./layer_handout')
 class Layer:
 
     def __init__(self, inp, out, weights=False, biases=False):

@@ -27,16 +27,22 @@ def main():
     ]
 
     n = Network(layers)
-    n.train(EPOCHS, data, targets, LR)
-    # n.train_random(EPOCHS, data, targets, LR)
+    # uncomment and comment the line of code here to choose the gradient descent optimized training
+    # n.train(EPOCHS, data, targets, LR)
+    n.train_random(EPOCHS, data, targets, LR)
+
+    # plotting loss
     loss = n.get_loss()
     loss = np.array(loss)
     epochs = np.arange(len(loss))
     plt.scatter(epochs, loss)
     plt.xlabel('Number of Episodes')
-    plt.ylabel('Loss Value')
-    plt.title('LiAff Neural Network loss over episodes')
+    plt.ylabel('Cost value')
+    plt.title('Neural Network cost over episodes')
     plt.show()
+
+    # testing
+
     while True:
         tests = np.array([float(input("Test: "))])
         print(tests)

@@ -15,15 +15,15 @@ This repository contains a basic neural network implementation in Python using N
 1. Clone the repository to your local machine:
 
 ```bash
-git clone https://github.com/yourusername/basic-nn.git
+git clone https://github.com/valteu/basic-neural-network.git
 ```
 Navigate to the project directory:
 ```bash
-cd basic-nn
+cd basic-neural-network
 ```
-Ensure you have NumPy and Handout installed. You can install them using pip:
+Ensure you have NumPy and matplotlib installed. You can install them using pip:
 ```bash
-pip install numpy handout
+pip install numpy matplotlib
 ```
 You are now ready to use the Basic Neural Network.
 ## Usage
@@ -31,8 +31,6 @@ You can use this basic neural network implementation in your Python projects by 
 1. Import the necessary modules:
 ```python
 import numpy as np
-import handout
-import json
 from Layer import Layer, Linear, ReLu, Sigmoid
 from Network import Network
 ```
