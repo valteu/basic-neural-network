@@ -8,7 +8,6 @@ This repository contains a basic neural network implementation in Python using N
 - [Usage](#usage)
 - [Architecture](#architecture)
 - [Example](#example)
-- [License](#license)
 
 ## Installation
 
