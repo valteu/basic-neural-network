@@ -1,6 +1,7 @@
 # Basic Neural Network Implementation
 
 This repository contains a basic neural network implementation in Python using NumPy. The neural network is designed with customizable layers for flexibility in building different architectures.
+I also created a tutorial about how to create a Neural Network from scratch and how it's math works: [Tutorial](https://valteu.com/resources/documents/deep_learning_tutorial.pdf)
 
 ## Table of Contents
 
